@@ -3,12 +3,14 @@ package pe.edu.pucp.teledramaapi.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
+import pe.edu.pucp.teledramaapi.dto.FuncionMasMenosVistaPorObraDto;
 import pe.edu.pucp.teledramaapi.dto.FuncionesPorObraDto;
 import pe.edu.pucp.teledramaapi.dto.InicioFinFuncionDto;
 import pe.edu.pucp.teledramaapi.entity.Funcion;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface FuncionRepository extends JpaRepository<Funcion, Integer> {
@@ -48,5 +50,34 @@ public interface FuncionRepository extends JpaRepository<Funcion, Integer> {
             "inner join teatro t on s.idteatro = t.id\n" +
             "where f.id=(?1);", nativeQuery = true)
     List<FuncionesPorObraDto> obradeFuncion(Integer idf);
+
+
+    @Query(value = "select o.id as idobra, o.nombre, o.fotoprincipal,\n" +
+            "f.fechahora,\n" +
+            "s.id as idsala, s.nombre as sala,\n" +
+            "t.id as idteatro, t.nombre as teatro,\n" +
+            "sum(c.cantidadtickets) as `asistencia` \n" +
+            "from compra c\t\t\t\t\t\t\t\n" +
+            "inner join funcion f on c.idfuncion = f.id\n" +
+            "inner join sala s on s.id = f.idsala\n" +
+            "inner join teatro t on t.id = s.idteatro\n" +
+            "inner join obra o on f.idobra = o.id\n" +
+            "where f.estado = \"inactivo\"\n" +
+            "group by f.id order by asistencia,fechahora desc limit 1", nativeQuery = true)
+    Optional<FuncionMasMenosVistaPorObraDto> funcionMenosVista();
+
+    @Query(value = "select o.id as idobra, o.nombre, o.fotoprincipal,\n" +
+            "f.fechahora,\n" +
+            "s.id as idsala, s.nombre as sala,\n" +
+            "t.id as idteatro, t.nombre as teatro,\n" +
+            "sum(c.cantidadtickets) as `asistencia` \n" +
+            "from compra c\n" +
+            "inner join funcion f on c.idfuncion = f.id\n" +
+            "inner join sala s on s.id = f.idsala\n" +
+            "inner join teatro t on t.id = s.idteatro\n" +
+            "inner join obra o on f.idobra = o.id\n" +
+            "where f.estado = \"inactivo\"\n" +
+            "group by f.id order by asistencia desc,fechahora desc limit 1;", nativeQuery = true)
+    Optional<FuncionMasMenosVistaPorObraDto> funcionMasVista();
 
 }

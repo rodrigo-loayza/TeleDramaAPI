@@ -8,6 +8,7 @@ import pe.edu.pucp.teledramaapi.dto.*;
 import pe.edu.pucp.teledramaapi.entity.Obra;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ObraRepository extends JpaRepository<Obra, Integer> {
@@ -135,5 +136,12 @@ public interface ObraRepository extends JpaRepository<Obra, Integer> {
             "            inner join teatro_empleado te on (te.idteatro = t.id)\n" +
             "            where t.id=?1 and te.idempleado = ?2 order by o.nombre ASC")
     List<Obra> obraPorTeatroGestion(Integer idTeatro, Integer idOperador, Pageable pageable);
+
+    @Query(nativeQuery = true, value = "select o.id, o.nombre,o.fotoprincipal,\n" +
+            "round(sum(ca.estrellas)/count(ca.estrellas),2) as calificacion, count(idobra) as votos \n" +
+            "from obra o inner join calificacion ca on ca.idobra=o.id\n" +
+            "where idelenco is null\n" +
+            "group by o.id having votos>3 order by calificacion desc limit 1")
+    Optional<ObraMejorCalificadaDto> obraMejorCalificada();
 
 }
