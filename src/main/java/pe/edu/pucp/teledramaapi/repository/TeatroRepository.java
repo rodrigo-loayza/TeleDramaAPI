@@ -2,10 +2,14 @@ package pe.edu.pucp.teledramaapi.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import pe.edu.pucp.teledramaapi.dto.MontoObraReporteDto;
 import pe.edu.pucp.teledramaapi.entity.Teatro;
 
+import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface TeatroRepository extends JpaRepository<Teatro, Integer> {
