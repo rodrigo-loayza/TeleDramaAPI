@@ -105,7 +105,7 @@ public interface FuncionRepository extends JpaRepository<Funcion, Integer> {
 
     // min porcentaje asistencia
     @Query(nativeQuery = true,value = "select idobra, nombreobra, idfuncion,\n" +
-            "    round(100*min(pctasistencia), 1) as minpct \n" +
+            "    round(100*min(pctasistencia), 1) as asistencia \n" +
             "from (select c.idfuncion as idfuncion, \n" +
             "\t\to.id as idobra, o.nombre as nombreobra,\n" +
             "\t\tsum(c.cantidadtickets)/f.aforofuncion as pctasistencia\n" +
@@ -121,12 +121,12 @@ public interface FuncionRepository extends JpaRepository<Funcion, Integer> {
             "\tgroup by c.idfuncion\n" +
             "\torder by idobra asc, pctasistencia asc) pct\n" +
             "group by pct.idobra;")
-    List<PorcentajeAsistenciaFuncionDto> funcionesMenosVistasPorcentaje(@Param("fechainicio") String fechainicio, @Param("fechafin") String fechafin,
-                                                                      @Param("idteatro") Integer idteatro);
+    List<PorcentajeAsistenciaObraDto> funcionesMenosVistasPorcentaje(@Param("fechainicio") Date fechainicio, @Param("fechafin") Date fechafin,
+                                                                     @Param("idteatro") Integer idteatro);
 
     // max porcentaje asistencia
     @Query(nativeQuery = true,value = "select idobra, nombreobra, idfuncion,\n" +
-            "    round(100*max(pctasistencia), 1) as maxpct \n" +
+            "    round(100*max(pctasistencia), 1) as asistencia \n" +
             "from (select c.idfuncion as idfuncion,\n" +
             "\t\to.id as idobra, o.nombre as nombreobra,\n" +
             "\t\tsum(c.cantidadtickets)/f.aforofuncion as pctasistencia\n" +
@@ -143,8 +143,8 @@ public interface FuncionRepository extends JpaRepository<Funcion, Integer> {
             "\torder by idobra asc, pctasistencia desc \n" +
             "\t) pct\n" +
             "group by pct.idobra;")
-    List<PorcentajeAsistenciaFuncionDto> funcionesMasVistasPorcentaje(@Param("fechainicio") String fechainicio, @Param("fechafin") String fechafin,
-                                                                        @Param("idteatro") Integer idteatro);
+    List<PorcentajeAsistenciaObraDto> funcionesMasVistasPorcentaje(@Param("fechainicio") Date fechainicio, @Param("fechafin") Date fechafin,
+                                                                   @Param("idteatro") Integer idteatro);
 
 
 
