@@ -2,7 +2,9 @@ package pe.edu.pucp.teledramaapi.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import pe.edu.pucp.teledramaapi.dto.*;
 import pe.edu.pucp.teledramaapi.dto.FuncionesPorObraDto;
 import pe.edu.pucp.teledramaapi.dto.FuncionesProximasDto;
 import pe.edu.pucp.teledramaapi.dto.HorasFuncionDto;
@@ -49,6 +51,102 @@ public interface FuncionRepository extends JpaRepository<Funcion, Integer> {
             "inner join teatro t on s.idteatro = t.id\n" +
             "where f.id=(?1);", nativeQuery = true)
     List<FuncionesPorObraDto> obradeFuncion(Integer idf);
+
+
+    @Query(value = "select o.id as idobra, o.nombre, o.fotoprincipal,\n" +
+            "f.fechahora,\n" +
+            "s.id as idsala, s.nombre as sala,\n" +
+            "t.id as idteatro, t.nombre as teatro,\n" +
+            "sum(c.cantidadtickets) as `asistencia` \n" +
+            "from compra c\t\t\t\t\t\t\t\n" +
+            "inner join funcion f on c.idfuncion = f.id\n" +
+            "inner join sala s on s.id = f.idsala\n" +
+            "inner join teatro t on t.id = s.idteatro\n" +
+            "inner join obra o on f.idobra = o.id\n" +
+            "where f.estado = \"inactivo\"\n" +
+            "group by f.id order by asistencia,fechahora desc limit 1", nativeQuery = true)
+    Optional<FuncionMasMenosVistaPorObraDto> funcionMenosVista();
+
+    @Query(value = "select o.id as idobra, o.nombre, o.fotoprincipal,\n" +
+            "f.fechahora,\n" +
+            "s.id as idsala, s.nombre as sala,\n" +
+            "t.id as idteatro, t.nombre as teatro,\n" +
+            "sum(c.cantidadtickets) as `asistencia` \n" +
+            "from compra c\n" +
+            "inner join funcion f on c.idfuncion = f.id\n" +
+            "inner join sala s on s.id = f.idsala\n" +
+            "inner join teatro t on t.id = s.idteatro\n" +
+            "inner join obra o on f.idobra = o.id\n" +
+            "where f.estado = \"inactivo\"\n" +
+            "group by f.id order by asistencia desc,fechahora desc limit 1;", nativeQuery = true)
+    Optional<FuncionMasMenosVistaPorObraDto> funcionMasVista();
+
+    @Query(nativeQuery = true, value = "select o.id as idobra, o.nombre, \n" +
+            "f.id as idfuncion, f.fechahora,\n" +
+            "s.id as idsala, s.nombre as sala,\n" +
+            "t.id as idteatro, t.nombre as teatro,\n" +
+            "c.precioticket,\n" +
+            "sum(c.cantidadtickets) as `asistencia`, \n" +
+            "round((sum(c.cantidadtickets)/f.aforofuncion)*100,2) as `porcentaje`,\n" +
+            "round((c.precioticket *sum(c.cantidadtickets)),2) as monto\n" +
+            "from compra c \n" +
+            "inner join funcion f on c.idfuncion = f.id\n" +
+            "inner join sala s on s.id = f.idsala\n" +
+            "inner join teatro t on t.id = s.idteatro\n" +
+            "inner join obra o on f.idobra = o.id\n" +
+            "where f.estado = 'inactivo' and  (:idobra is null or o.id = :idobra) " +
+            "and (:idteatro is null or t.id = :idteatro) " +
+            "and (:fechafin is not null or date(f.fechahora) = :fechainicio)  " +
+            "and (:fechafin is null or (date(f.fechahora) >= :fechainicio and date(f.fechahora) <= :fechafin))  " +
+            "group by f.id order by o.nombre, f.fechahora")
+    List<ReporteDto> generarReporte(@Param("fechainicio") String fechainicio, @Param("fechafin") String fechafin,
+            @Param("idobra") Integer idobra,
+            @Param("idteatro") Integer idteatro);
+
+    // min porcentaje asistencia
+    @Query(nativeQuery = true,value = "select idobra, nombreobra, idfuncion,\n" +
+            "    round(100*min(pctasistencia), 1) as minpct \n" +
+            "from (select c.idfuncion as idfuncion, \n" +
+            "\t\to.id as idobra, o.nombre as nombreobra,\n" +
+            "\t\tsum(c.cantidadtickets)/f.aforofuncion as pctasistencia\n" +
+            "\tfrom compra c\n" +
+            "\tinner join funcion f on c.idfuncion = f.id\n" +
+            "\tinner join obra o on f.idobra = o.id\n" +
+            "    inner join sala s on f.idsala = s.id\n" +
+            "    inner join teatro t on s.idteatro = t.id\n" +
+            "\twhere c.estado = 'asistido' \n" +
+            "and (:idteatro is null or t.id = :idteatro) " +
+            "and (:fechafin is not null or date(f.fechahora) = :fechainicio)  " +
+            "and (:fechafin is null or (date(f.fechahora) >= :fechainicio and date(f.fechahora) <= :fechafin))  " +
+            "\tgroup by c.idfuncion\n" +
+            "\torder by idobra asc, pctasistencia asc) pct\n" +
+            "group by pct.idobra;")
+    List<PorcentajeAsistenciaFuncionDto> funcionesMenosVistasPorcentaje(@Param("fechainicio") String fechainicio, @Param("fechafin") String fechafin,
+                                                                      @Param("idteatro") Integer idteatro);
+
+    // max porcentaje asistencia
+    @Query(nativeQuery = true,value = "select idobra, nombreobra, idfuncion,\n" +
+            "    round(100*max(pctasistencia), 1) as maxpct \n" +
+            "from (select c.idfuncion as idfuncion,\n" +
+            "\t\to.id as idobra, o.nombre as nombreobra,\n" +
+            "\t\tsum(c.cantidadtickets)/f.aforofuncion as pctasistencia\n" +
+            "\tfrom compra c\n" +
+            "\tinner join funcion f on c.idfuncion = f.id\n" +
+            "\tinner join obra o on f.idobra = o.id\n" +
+            "    inner join sala s on f.idsala = s.id\n" +
+            "    inner join teatro t on s.idteatro = t.id\n" +
+            "\twhere c.estado = 'asistido' \n" +
+            "and (:idteatro is null or t.id = :idteatro) " +
+            "and (:fechafin is not null or date(f.fechahora) = :fechainicio)  " +
+            "and (:fechafin is null or (date(f.fechahora) >= :fechainicio and date(f.fechahora) <= :fechafin))  " +
+            "\tgroup by c.idfuncion\n" +
+            "\torder by idobra asc, pctasistencia desc \n" +
+            "\t) pct\n" +
+            "group by pct.idobra;")
+    List<PorcentajeAsistenciaFuncionDto> funcionesMasVistasPorcentaje(@Param("fechainicio") String fechainicio, @Param("fechafin") String fechafin,
+                                                                        @Param("idteatro") Integer idteatro);
+
+
 
     @Query(value ="select f.id as idfuncion,time(f.fechahora) as time,o.id as idobra from funcion f\n" +
             "inner join obra o on (o.id=f.idobra)\n" +
