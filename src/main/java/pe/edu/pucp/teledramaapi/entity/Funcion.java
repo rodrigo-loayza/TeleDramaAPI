@@ -1,5 +1,6 @@
 package pe.edu.pucp.teledramaapi.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -9,13 +10,14 @@ import javax.validation.constraints.Digits;
 import javax.validation.constraints.Future;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "funcion")
 @Getter
 @Setter
-public class Funcion {
+public class Funcion implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -44,10 +46,12 @@ public class Funcion {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "idsala", nullable = false)
     @NotNull(message = "Debe seleccionar una sala para la obra")
+    @JsonBackReference
     private Sala sala;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "idobra", nullable = false)
+    @JsonBackReference
     private Obra obra;
 
 }

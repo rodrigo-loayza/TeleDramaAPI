@@ -1,5 +1,6 @@
 package pe.edu.pucp.teledramaapi.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.format.annotation.NumberFormat;
@@ -60,9 +61,11 @@ public class Teatro {
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "iddistrito", nullable = false)
     @NotNull(message = "Distrito no debe estar vacío")
+    @JsonBackReference
     private Distrito distrito;
 
     @ManyToMany(mappedBy = "teatrosPorEmpleado")
+    @JsonBackReference
     private List<Empleado> empleados;
 
 }

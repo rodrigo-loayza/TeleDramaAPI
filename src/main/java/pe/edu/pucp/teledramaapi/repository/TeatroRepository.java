@@ -5,7 +5,9 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import pe.edu.pucp.teledramaapi.entity.Teatro;
 
+import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface TeatroRepository extends JpaRepository<Teatro,Integer> {
@@ -42,4 +44,10 @@ public interface TeatroRepository extends JpaRepository<Teatro,Integer> {
             "where f.estado='activo' and d.id=?1 order by fechahora ASC;", nativeQuery = true)
     List<Teatro> teatrosPorDistrito(Integer distrito);
 
+    @Query(value ="select distinct t.* from funcion f\n" +
+            "inner join obra o on (o.id=f.idobra)\n" +
+            "inner join sala s on (s.id=f.idsala)\n" +
+            "inner join teatro t on (t.id=s.idteatro)\n" +
+            "where date(f.fechahora)=?1 and o.id=?2 and f.estado='activo'", nativeQuery = true)
+    Optional<List<Teatro>> teatrosPorFecha(Date fecha, Integer idObra);
 }
