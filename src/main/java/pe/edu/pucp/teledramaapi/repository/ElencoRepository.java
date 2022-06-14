@@ -3,6 +3,7 @@ package pe.edu.pucp.teledramaapi.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
+import pe.edu.pucp.teledramaapi.dto.MejorElencoDto;
 import pe.edu.pucp.teledramaapi.entity.Elenco;
 
 import java.util.List;
@@ -29,8 +30,8 @@ public interface ElencoRepository extends JpaRepository<Elenco, Integer> {
             "from elenco e inner join calificacion ca on e.id = ca.idelenco\n" +
             "where idelenco is not null and e.rol = ?1\n" +
             "group by e.id\n" +
-            "having votos>3 order by calificacion desc limit 3")
-    Optional<Elenco> elencoMejorCalificado(String rol);
+            "having votos > 3 order by calificacion desc limit 3")
+    Optional<List<MejorElencoDto>> elencoMejorCalificado(String rol);
 
 }
 

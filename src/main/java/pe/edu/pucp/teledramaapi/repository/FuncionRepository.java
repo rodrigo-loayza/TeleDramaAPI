@@ -65,7 +65,7 @@ public interface FuncionRepository extends JpaRepository<Funcion, Integer> {
             "inner join obra o on f.idobra = o.id\n" +
             "where f.estado = \"inactivo\"\n" +
             "group by f.id order by asistencia,fechahora desc limit 1", nativeQuery = true)
-    Optional<FuncionMasMenosVistaPorObraDto> funcionMenosVista();
+    Optional<FuncionMasMenosVistaDto> funcionMenosVista();
 
     @Query(value = "select o.id as idobra, o.nombre, o.fotoprincipal,\n" +
             "f.fechahora,\n" +
@@ -79,7 +79,7 @@ public interface FuncionRepository extends JpaRepository<Funcion, Integer> {
             "inner join obra o on f.idobra = o.id\n" +
             "where f.estado = \"inactivo\"\n" +
             "group by f.id order by asistencia desc,fechahora desc limit 1;", nativeQuery = true)
-    Optional<FuncionMasMenosVistaPorObraDto> funcionMasVista();
+    Optional<FuncionMasMenosVistaDto> funcionMasVista();
 
     @Query(nativeQuery = true, value = "select o.id as idobra, o.nombre, \n" +
             "f.id as idfuncion, f.fechahora,\n" +

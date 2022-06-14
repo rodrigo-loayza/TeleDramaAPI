@@ -1,21 +1,22 @@
 package pe.edu.pucp.teledramaapi.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import pe.edu.pucp.teledramaapi.dto.MontoObraReporteDto;
-import pe.edu.pucp.teledramaapi.dto.PorcentajeAsistenciaObraDto;
-import pe.edu.pucp.teledramaapi.dto.ReporteDto;
+import pe.edu.pucp.teledramaapi.dto.*;
+import pe.edu.pucp.teledramaapi.repository.ElencoRepository;
 import pe.edu.pucp.teledramaapi.repository.FuncionRepository;
+import pe.edu.pucp.teledramaapi.repository.ObraRepository;
 import pe.edu.pucp.teledramaapi.repository.TeatroRepository;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.IllegalFormatCodePointException;
 import java.util.List;
+import java.util.Optional;
 
 @CrossOrigin
 @RestController
@@ -23,10 +24,16 @@ import java.util.List;
 public class DashboardController {
 
     @Autowired
-    FuncionRepository funcionRepository;
+    private FuncionRepository funcionRepository;
 
     @Autowired
-    TeatroRepository teatroRepository;
+    private TeatroRepository teatroRepository;
+
+    @Autowired
+    private ObraRepository obraRepository;
+
+    @Autowired
+    private ElencoRepository elencoRepository;
 
     @GetMapping(value = "/test", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<ReporteDto> generarReporte() {
@@ -39,10 +46,10 @@ public class DashboardController {
     }
 
     // Grafico: Filtro sin obra sin teatro | Filtro sin obra con teatro
-    @PostMapping(value = "/asistencia/obra",produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/asistencia/obra", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<PorcentajeAsistenciaObraDto> obtenerAsistenciaPorObra(
-            @RequestParam("opcion") String opcion,
-            @RequestParam("inicio") String fechainicioStr,
+            @RequestParam(value = "opcion", required = true) String opcion,
+            @RequestParam(value = "inicio", required = false) String fechainicioStr,
             @RequestParam(value = "fin", required = false) String fechafinStr,
             @RequestParam(value = "idteatro", required = false) String idteatroStr) {
         try {
@@ -72,5 +79,91 @@ public class DashboardController {
         return null;
     }
 
+    @GetMapping("/vistas/funcion")
+    public ResponseEntity<HashMap<String, Object>> funcionMasMenosVista(@RequestParam(value = "opcion", required = false) String opcion) {
+        HashMap<String, Object> response = new HashMap<>();
+        switch (opcion) {
+            case "mas" -> {
+                Optional<FuncionMasMenosVistaDto> funcionMas = funcionRepository.funcionMasVista();
+                return funcionMas.map(funMas -> {
+                    response.put("result", "success");
+                    response.put("funcion", funMas);
+                    return new ResponseEntity<>(response, HttpStatus.OK);
+                }).orElseGet(() -> {
+                    response.put("result", "failure");
+                    response.put("msg", "Funcion más vista no encontrada");
+                    return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+                });
+            }
+            case "menos" -> {
+                Optional<FuncionMasMenosVistaDto> funcionMenos = funcionRepository.funcionMenosVista();
+                return funcionMenos.map(funMenos -> {
+                    response.put("result", "success");
+                    response.put("funcion", funMenos);
+                    return new ResponseEntity<>(response, HttpStatus.OK);
+                }).orElseGet(() -> {
+                    response.put("result", "failure");
+                    response.put("msg", "Funcion menos vista no encontrada");
+                    return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+                });
+            }
+            default -> {
+                response.put("result", "failure");
+                response.put("msg", "Selecciona una opcion entre mas y menos");
+                return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+            }
+        }
+    }
+
+    @GetMapping("/calificacion/elenco")
+    public ResponseEntity<HashMap<String, Object>> mejorElenco(@RequestParam(value = "rol", required = false) String rol) {
+        HashMap<String, Object> response = new HashMap<>();
+        switch (rol) {
+            case "actor" -> {
+                Optional<List<MejorElencoDto>> optActores = elencoRepository.elencoMejorCalificado(rol);
+                return optActores.map(actores -> {
+                    response.put("result", "success");
+                    response.put("elenco", actores);
+                    return new ResponseEntity<>(response, HttpStatus.OK);
+                }).orElseGet(() -> {
+                    response.put("result", "failure");
+                    response.put("msg", "Actores mejor calificados no encontrados");
+                    return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+                });
+            }
+            case "director" -> {
+                Optional<List<MejorElencoDto>> optDirectores = elencoRepository.elencoMejorCalificado(rol);
+                return optDirectores.map(directores -> {
+                    response.put("result", "success");
+                    response.put("elenco", directores);
+                    return new ResponseEntity<>(response, HttpStatus.OK);
+                }).orElseGet(() -> {
+                    response.put("result", "failure");
+                    response.put("msg", "Directores mejor calificados no encontrados");
+                    return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+                });
+            }
+            default -> {
+                response.put("result", "failure");
+                response.put("msg", "El rol debe ser actor o director");
+                return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+            }
+        }
+    }
+
+    @GetMapping("/calificacion/obra")
+    public ResponseEntity<HashMap<String, Object>> obraMejorCalificada() {
+        HashMap<String, Object> response = new HashMap<>();
+        Optional<ObraMejorCalificadaDto> optObra = obraRepository.obraMejorCalificada();
+        return optObra.map(obra -> {
+            response.put("result", "success");
+            response.put("obra", obra);
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        }).orElseGet(() -> {
+            response.put("result", "failure");
+            response.put("msg", "Obra mejor calificada no encontrada");
+            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+        });
+    }
 
 }

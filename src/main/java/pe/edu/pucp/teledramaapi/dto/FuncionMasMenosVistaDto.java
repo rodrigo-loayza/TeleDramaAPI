@@ -2,7 +2,7 @@ package pe.edu.pucp.teledramaapi.dto;
 
 import java.time.LocalDateTime;
 
-public interface FuncionMasMenosVistaPorObraDto {
+public interface FuncionMasMenosVistaDto {
 
     Integer getIdobra();
     String getNombre();

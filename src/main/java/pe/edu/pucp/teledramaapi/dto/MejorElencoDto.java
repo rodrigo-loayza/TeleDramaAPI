@@ -1,6 +1,6 @@
 package pe.edu.pucp.teledramaapi.dto;
 
-public interface MejorElencoPorObraDto {
+public interface MejorElencoDto {
 
     Integer getId();
     String getFoto();

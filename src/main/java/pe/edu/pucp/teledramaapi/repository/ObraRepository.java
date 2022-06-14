@@ -141,7 +141,7 @@ public interface ObraRepository extends JpaRepository<Obra, Integer> {
             "round(sum(ca.estrellas)/count(ca.estrellas),2) as calificacion, count(idobra) as votos \n" +
             "from obra o inner join calificacion ca on ca.idobra=o.id\n" +
             "where idelenco is null\n" +
-            "group by o.id having votos>3 order by calificacion desc limit 1")
+            "group by o.id having votos > 3 order by calificacion desc limit 1")
     Optional<ObraMejorCalificadaDto> obraMejorCalificada();
 
 }
