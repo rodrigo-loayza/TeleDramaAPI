@@ -156,7 +156,7 @@ public class DashboardController {
         });
     }
 
-    @PostMapping("/reporte")
+    @PostMapping(value = "/reporte", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<ReporteDto> generarReporte(
             @RequestParam(value = "inicio") String fechainicioStr,
             @RequestParam(value = "fin", required = false) String fechafinStr,
@@ -164,12 +164,16 @@ public class DashboardController {
             @RequestParam(value = "idobra", required = false) String idobraStr) {
 
         try {
+            System.out.println(fechafinStr);
+            System.out.println(idteatroStr);
+            System.out.println(idobraStr);
+            System.out.println(fechainicioStr);
 
             SimpleDateFormat fechaformat = new SimpleDateFormat("yyyyMMdd");
             Date fechainicio = fechaformat.parse(fechainicioStr);
             Date fechafin = (fechafinStr != null && !fechafinStr.equals("")) ? fechaformat.parse(fechafinStr) : null;
-            Integer idteatro = (idteatroStr != null && idteatroStr.equals("")) ? Integer.parseInt(idteatroStr) : null;
-            Integer idobra = (idobraStr != null && idobraStr.equals("")) ? Integer.parseInt(idobraStr) : null;
+            Integer idteatro = (idteatroStr != null && !idteatroStr.equals("")) ? Integer.parseInt(idteatroStr) : null;
+            Integer idobra = (idobraStr != null && !idobraStr.equals("")) ? Integer.parseInt(idobraStr) : null;
 
             return funcionRepository.generarReporte(fechainicio, fechafin, idobra, idteatro);
 

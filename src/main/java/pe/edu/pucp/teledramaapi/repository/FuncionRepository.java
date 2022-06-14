@@ -94,7 +94,8 @@ public interface FuncionRepository extends JpaRepository<Funcion, Integer> {
             "inner join sala s on s.id = f.idsala\n" +
             "inner join teatro t on t.id = s.idteatro\n" +
             "inner join obra o on f.idobra = o.id\n" +
-            "where f.estado = 'inactivo' and  (:idobra is null or o.id = :idobra) " +
+            "where f.estado = 'inactivo'\n" +
+            "and (:idobra is null or o.id = :idobra) " +
             "and (:idteatro is null or t.id = :idteatro) " +
             "and (:fechafin is not null or date(f.fechahora) = :fechainicio)  " +
             "and (:fechafin is null or (date(f.fechahora) >= :fechainicio and date(f.fechahora) <= :fechafin))  " +
