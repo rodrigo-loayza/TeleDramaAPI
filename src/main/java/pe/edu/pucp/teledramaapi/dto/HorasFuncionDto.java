@@ -4,7 +4,7 @@ import java.time.LocalTime;
 public interface HorasFuncionDto {
 
     Integer getIdfuncion();
-    LocalTime getTime();
+    String getTime();
     Integer getIdobra();
 
 }

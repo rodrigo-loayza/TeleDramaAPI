@@ -148,11 +148,20 @@ public interface FuncionRepository extends JpaRepository<Funcion, Integer> {
 
 
 
-    @Query(value ="select f.id as idfuncion,time(f.fechahora) as time,o.id as idobra from funcion f\n" +
+    @Query(value ="select f.id as idfuncion,time_format(f.fechahora,'%H:%i') as time,o.id as idobra from funcion f\n" +
             "inner join obra o on (o.id=f.idobra)\n" +
             "inner join sala s on (s.id=f.idsala)\n" +
             "inner join teatro t on (t.id=s.idteatro)\n" +
             "where date(f.fechahora)= ?1 and o.id=?2 and t.id=?3 and f.estado='activo';", nativeQuery = true)
     Optional<List<HorasFuncionDto>> horasFuncionesPorTeatro(Date fecha, Integer idobra, Integer idteatro);
+
+
+    @Query(value="select f.id as idfuncion, o.id as idobra,o.nombre as nombreobra, date(f.fechahora) as fechafuncion, time_format(f.fechahora,'%H:%i') as horafuncion, t.nombre as nombreteatro, f.aforofuncion as aforo\n" +
+            "from funcion f \n" +
+            "inner join obra o on f.idobra = o.id\n" +
+            "inner join sala s on s.id=f.idsala\n" +
+            "inner join teatro t on t.id=s.idteatro\n" +
+            "where f.id=?1",nativeQuery = true)
+    Optional<FuncionDatosDto> detalleFuncion(Integer idfuncion);
 
 }

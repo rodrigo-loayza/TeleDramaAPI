@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import pe.edu.pucp.teledramaapi.dto.FuncionDatosDto;
 import pe.edu.pucp.teledramaapi.dto.FuncionesProximasDto;
 import pe.edu.pucp.teledramaapi.dto.HorasFuncionDto;
 import pe.edu.pucp.teledramaapi.entity.Funcion;
@@ -57,6 +58,25 @@ public class FuncionController {
                 return new ResponseEntity<>(response, HttpStatus.NOT_FOUND); //
             });
         } catch (NumberFormatException | ParseException p) {
+            response.put("msg", "Error de parámetros");
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @GetMapping(value = "/gestion/detalle")
+    public ResponseEntity<HashMap<String, Object>> detalleFuncion(@RequestParam("idfuncion") String idfuncion) {
+        HashMap<String, Object> response = new HashMap<>();
+        try {
+            Optional<FuncionDatosDto> funcion = funcionRepository.detalleFuncion(Integer.parseInt(idfuncion));
+            if(funcion.isPresent()) {
+                response.put("result", "success");
+                response.put("funcioncita", funcion.get());
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            }else {
+                response.put("msg", "Funcion no encontrada");
+                return new ResponseEntity<>(response, HttpStatus.NOT_FOUND); //
+            }
+        } catch (NumberFormatException e) {
             response.put("msg", "Error de parámetros");
             return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
         }
