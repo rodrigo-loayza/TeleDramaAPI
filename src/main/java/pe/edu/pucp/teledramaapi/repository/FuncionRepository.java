@@ -99,9 +99,10 @@ public interface FuncionRepository extends JpaRepository<Funcion, Integer> {
             "and (:fechafin is not null or date(f.fechahora) = :fechainicio)  " +
             "and (:fechafin is null or (date(f.fechahora) >= :fechainicio and date(f.fechahora) <= :fechafin))  " +
             "group by f.id order by o.nombre, f.fechahora")
-    List<ReporteDto> generarReporte(@Param("fechainicio") String fechainicio, @Param("fechafin") String fechafin,
-            @Param("idobra") Integer idobra,
-            @Param("idteatro") Integer idteatro);
+    List<ReporteDto> generarReporte(@Param("fechainicio") Date fechainicio,
+                                    @Param("fechafin") Date fechafin,
+                                    @Param("idobra") Integer idobra,
+                                    @Param("idteatro") Integer idteatro);
 
     // min porcentaje asistencia
     @Query(nativeQuery = true,value = "select idobra, nombreobra, idfuncion,\n" +

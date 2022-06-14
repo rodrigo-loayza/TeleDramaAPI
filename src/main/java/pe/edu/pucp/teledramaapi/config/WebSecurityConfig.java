@@ -27,6 +27,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/sala/**").hasAnyAuthority("operador")
                 .antMatchers("/api/teatro/**").hasAnyAuthority("operador")
                 .antMatchers("/api/funcion/**").hasAnyAuthority("operador")
+                .antMatchers("/api/dashboard/**").hasAnyAuthority("operador")
                 .anyRequest().permitAll();
         http.httpBasic();
     }
