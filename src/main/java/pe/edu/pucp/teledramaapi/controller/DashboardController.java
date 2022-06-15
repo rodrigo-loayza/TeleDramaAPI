@@ -52,7 +52,7 @@ public class DashboardController {
             SimpleDateFormat fechaformat = new SimpleDateFormat("yyyyMMdd");
             Date fechainicio = fechaformat.parse(fechainicioStr);
             Date fechafin = (fechafinStr != null && !fechafinStr.equals("")) ? fechaformat.parse(fechafinStr) : null;
-            Integer idteatro = (idteatroStr != null && idteatroStr.equals("")) ? Integer.parseInt(idteatroStr) : null;
+            Integer idteatro = (idteatroStr != null && !idteatroStr.equals("")) ? Integer.parseInt(idteatroStr) : null;
 
             if (opcion.equalsIgnoreCase("mas")) {
                 return funcionRepository.funcionesMasVistasPorcentaje(fechainicio, fechafin, idteatro);
@@ -164,11 +164,6 @@ public class DashboardController {
             @RequestParam(value = "idobra", required = false) String idobraStr) {
 
         try {
-            System.out.println(fechafinStr);
-            System.out.println(idteatroStr);
-            System.out.println(idobraStr);
-            System.out.println(fechainicioStr);
-
             SimpleDateFormat fechaformat = new SimpleDateFormat("yyyyMMdd");
             Date fechainicio = fechaformat.parse(fechainicioStr);
             Date fechafin = (fechafinStr != null && !fechafinStr.equals("")) ? fechaformat.parse(fechafinStr) : null;
