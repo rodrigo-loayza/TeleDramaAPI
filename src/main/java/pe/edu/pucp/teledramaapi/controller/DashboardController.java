@@ -35,9 +35,28 @@ public class DashboardController {
     @Autowired
     private ElencoRepository elencoRepository;
 
-    @GetMapping(value = "/monto", produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<MontoObraReporteDto> montoRecaudadoPorObra() {
-        return teatroRepository.montoRecaudadoPorObra("20220301", "20220430", null);
+
+    // Obtener monto recaudado de cada obra
+    @PostMapping(value = "/monto", produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<MontoObraReporteDto> montoRecaudadoPorObra(
+            @RequestParam(value = "inicio") String fechainicioStr,
+            @RequestParam(value = "fin", required = false) String fechafinStr,
+            @RequestParam(value = "idteatro", required = false) String idteatroStr) {
+
+        try {
+            SimpleDateFormat fechaformat = new SimpleDateFormat("yyyyMMdd");
+            Date fechainicio = fechaformat.parse(fechainicioStr);
+            Date fechafin = (fechafinStr != null && !fechafinStr.equals("")) ? fechaformat.parse(fechafinStr) : null;
+            Integer idteatro = (idteatroStr != null && !idteatroStr.equals("")) ? Integer.parseInt(idteatroStr) : null;
+
+            return teatroRepository.montoRecaudadoPorObra(fechainicio, fechafin, idteatro);
+
+        } catch (NumberFormatException e) {
+            System.out.println("Monto recaudado obra: \nestado : error \nmsg : El idteatro debe ser un número");
+        } catch (ParseException e) {
+            System.out.println("Monto recaudado obra: \nestado : error \nmsg : La fecha debe ser en el siguiente formato: YYYYMMDD");
+        }
+        return null;
     }
 
     // Grafico: Filtro sin obra sin teatro | Filtro sin obra con teatro

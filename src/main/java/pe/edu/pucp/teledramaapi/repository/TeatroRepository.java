@@ -46,7 +46,7 @@ public interface TeatroRepository extends JpaRepository<Teatro, Integer> {
             "where f.estado='activo' and d.id=?1 order by fechahora ASC;", nativeQuery = true)
     List<Teatro> teatrosPorDistrito(Integer distrito);
 
-    @Query(value ="select distinct t.* from funcion f\n" +
+    @Query(value = "select distinct t.* from funcion f\n" +
             "inner join obra o on (o.id=f.idobra)\n" +
             "inner join sala s on (s.id=f.idsala)\n" +
             "inner join teatro t on (t.id=s.idteatro)\n" +
@@ -61,12 +61,12 @@ public interface TeatroRepository extends JpaRepository<Teatro, Integer> {
             "inner join sala s on s.id = f.idsala\n" +
             "inner join teatro t on t.id = s.idteatro\n" +
             "inner join obra o on f.idobra = o.id\n" +
-            "where f.estado = 'inactivo' " +
+            "where f.estado = 'inactivo' and c.estado = 'asistido' " +
             "and (:idteatro is null or t.id = :idteatro)" +
             "and (:fechafin is not null or date(f.fechahora) = :fechainicio)  " +
             "and (:fechafin is null or (date(f.fechahora) >= :fechainicio and date(f.fechahora) <= :fechafin))  " +
             "group by f.id order by o.nombre, f.fechahora) \n" +
             "as reporte group by idobra order by nombre;")
-    List<MontoObraReporteDto> montoRecaudadoPorObra(@Param("fechainicio") String fechainicio, @Param("fechafin") String fechafin,
+    List<MontoObraReporteDto> montoRecaudadoPorObra(@Param("fechainicio") Date fechainicio, @Param("fechafin") Date fechafin,
                                                     @Param("idteatro") Integer idteatro);
 }
