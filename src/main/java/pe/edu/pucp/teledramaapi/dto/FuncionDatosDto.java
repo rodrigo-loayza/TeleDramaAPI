@@ -6,6 +6,7 @@ import java.time.LocalTime;
 public interface FuncionDatosDto {
 
     Integer getIdfuncion();
+    Double getCostoticket();
     Integer getIdobra();
     String getNombreobra();
     String  getImagen();
