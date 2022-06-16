@@ -18,8 +18,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
-@CrossOrigin
 @RestController
+@CrossOrigin
 @RequestMapping("/dashboard")
 public class DashboardController {
 
@@ -35,11 +35,6 @@ public class DashboardController {
     @Autowired
     private ElencoRepository elencoRepository;
 
-    @GetMapping(value = "/test", produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<ReporteDto> generarReporte() {
-        return funcionRepository.generarReporte("20220301", "20220430", null, null);
-    }
-
     @GetMapping(value = "/monto", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<MontoObraReporteDto> montoRecaudadoPorObra() {
         return teatroRepository.montoRecaudadoPorObra("20220301", "20220430", null);
@@ -48,21 +43,17 @@ public class DashboardController {
     // Grafico: Filtro sin obra sin teatro | Filtro sin obra con teatro
     @PostMapping(value = "/asistencia/obra", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<PorcentajeAsistenciaObraDto> obtenerAsistenciaPorObra(
-            @RequestParam(value = "opcion", required = true) String opcion,
-            @RequestParam(value = "inicio", required = false) String fechainicioStr,
+            @RequestParam(value = "opcion") String opcion,
+            @RequestParam(value = "inicio") String fechainicioStr,
             @RequestParam(value = "fin", required = false) String fechafinStr,
             @RequestParam(value = "idteatro", required = false) String idteatroStr) {
+
         try {
             SimpleDateFormat fechaformat = new SimpleDateFormat("yyyyMMdd");
             Date fechainicio = fechaformat.parse(fechainicioStr);
-            Date fechafin = null;
-            if (fechafinStr != null) {
-                fechafin = fechaformat.parse(fechafinStr);
-            }
-            Integer idteatro = null;
-            if (idteatroStr != null) {
-                idteatro = Integer.parseInt(idteatroStr);
-            }
+            Date fechafin = (fechafinStr != null && !fechafinStr.equals("")) ? fechaformat.parse(fechafinStr) : null;
+            Integer idteatro = (idteatroStr != null && !idteatroStr.equals("")) ? Integer.parseInt(idteatroStr) : null;
+
             if (opcion.equalsIgnoreCase("mas")) {
                 return funcionRepository.funcionesMasVistasPorcentaje(fechainicio, fechafin, idteatro);
             } else if (opcion.equalsIgnoreCase("menos")) {
@@ -70,12 +61,11 @@ public class DashboardController {
             }
 
         } catch (NumberFormatException e) {
-            System.out.println("estado : error");
-            System.out.println("msg : El id debe ser un número");
+            System.out.println("Asistencia obra: \nestado : error \nmsg : El id debe ser un número");
         } catch (ParseException e) {
-            System.out.println("estado : error");
-            System.out.println("msg : La fecha debe ser en el siguiente formato: YYYYMMDD");
+            System.out.println("Asistencia obra: \nestado : error \nmsg : La fecha debe ser en el siguiente formato: YYYYMMDD");
         }
+
         return null;
     }
 
@@ -165,5 +155,32 @@ public class DashboardController {
             return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
         });
     }
+
+    @PostMapping(value = "/reporte", produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<ReporteDto> generarReporte(
+            @RequestParam(value = "inicio") String fechainicioStr,
+            @RequestParam(value = "fin", required = false) String fechafinStr,
+            @RequestParam(value = "idteatro", required = false) String idteatroStr,
+            @RequestParam(value = "idobra", required = false) String idobraStr) {
+
+        try {
+            SimpleDateFormat fechaformat = new SimpleDateFormat("yyyyMMdd");
+            Date fechainicio = fechaformat.parse(fechainicioStr);
+            Date fechafin = (fechafinStr != null && !fechafinStr.equals("")) ? fechaformat.parse(fechafinStr) : null;
+            Integer idteatro = (idteatroStr != null && !idteatroStr.equals("")) ? Integer.parseInt(idteatroStr) : null;
+            Integer idobra = (idobraStr != null && !idobraStr.equals("")) ? Integer.parseInt(idobraStr) : null;
+
+            return funcionRepository.generarReporte(fechainicio, fechafin, idobra, idteatro);
+
+        } catch (NumberFormatException e) {
+            System.out.println("Reporte: \nestado : error \nmsg : El id debe ser un número");
+        } catch (ParseException e) {
+            System.out.println("Reporte: \nestado : error \nmsg : La fecha debe ser en el siguiente formato: yyyyMMdd");
+        }
+
+        return null;
+    }
+
+
 
 }
