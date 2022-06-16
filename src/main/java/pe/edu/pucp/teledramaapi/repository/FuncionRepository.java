@@ -156,7 +156,7 @@ public interface FuncionRepository extends JpaRepository<Funcion, Integer> {
     Optional<List<HorasFuncionDto>> horasFuncionesPorTeatro(Date fecha, Integer idobra, Integer idteatro);
 
 
-    @Query(value="select f.id as idfuncion, o.id as idobra,o.nombre as nombreobra, date(f.fechahora) as fechafuncion, time_format(f.fechahora,'%H:%i') as horafuncion, t.nombre as nombreteatro, f.aforofuncion as aforo\n" +
+    @Query(value="select f.id as idfuncion, o.id as idobra,o.nombre as nombreobra, o.fotoprincipal as imagen, date(f.fechahora) as fechafuncion, time_format(f.fechahora,'%H:%i') as horafuncion, t.nombre as nombreteatro, f.aforofuncion as aforo\n" +
             "from funcion f \n" +
             "inner join obra o on f.idobra = o.id\n" +
             "inner join sala s on s.id=f.idsala\n" +

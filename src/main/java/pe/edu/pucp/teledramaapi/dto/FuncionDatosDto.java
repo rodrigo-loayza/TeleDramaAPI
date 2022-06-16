@@ -8,6 +8,7 @@ public interface FuncionDatosDto {
     Integer getIdfuncion();
     Integer getIdobra();
     String getNombreobra();
+    String  getImagen();
     LocalDate getFechafuncion();
     String getHorafuncion();
     String getNombreteatro();
