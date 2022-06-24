@@ -1,6 +1,6 @@
 package pe.edu.pucp.teledramaapi.dto;
 
-public interface contenidoSalaDto {
+public interface ContenidoSalaDto {
     Integer getIdfuncion();
     String getNombreobra();
     String getDirector();

@@ -47,8 +47,9 @@ public class FuncionController {
     public ResponseEntity<HashMap<String, Object>> horasFuncionPorObra(@RequestParam("idobra") String idObra, @RequestParam("fecha") String fecha, @RequestParam("idteatro") String idteatro) {
         HashMap<String, Object> response = new HashMap<>();
         try {
-            SimpleDateFormat dateFormat=new SimpleDateFormat("yyyy-MM-dd");
-            Optional<List<HorasFuncionDto>> hora = funcionRepository.horasFuncionesPorTeatro(dateFormat.parse(fecha), Integer.parseInt(idObra), Integer.parseInt(idteatro));
+//            SimpleDateFormat dateFormat=new SimpleDateFormat("yyyy-MM-dd");
+//            Optional<List<HorasFuncionDto>> hora = funcionRepository.horasFuncionesPorTeatro(dateFormat.parse(fecha), Integer.parseInt(idObra), Integer.parseInt(idteatro));
+            Optional<List<HorasFuncionDto>> hora = funcionRepository.horasFuncionesPorTeatro(fecha, Integer.parseInt(idObra), Integer.parseInt(idteatro));
             return hora.map(horitas-> {
                 response.put("result", "success");
                 response.put("horitas", horitas);
@@ -57,7 +58,7 @@ public class FuncionController {
                 response.put("msg", "Funcion no encontrada");
                 return new ResponseEntity<>(response, HttpStatus.NOT_FOUND); //
             });
-        } catch (NumberFormatException | ParseException p) {
+        } catch (NumberFormatException e) {
             response.put("msg", "Error de parámetros");
             return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
         }

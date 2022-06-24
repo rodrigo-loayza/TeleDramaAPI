@@ -3,3 +3,4 @@ VOLUME /tmp
 EXPOSE 8090
 ADD ./target/TeleDrama-webservices-0.0.1-SNAPSHOT.jar teledrama-api1.jar
 ENTRYPOINT ["java","-jar","teledrama-api1.jar"]
+ENV TZ America/Lima

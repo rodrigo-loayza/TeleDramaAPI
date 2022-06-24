@@ -6,10 +6,10 @@ import lombok.Setter;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "imagenesobra")
+@Table(name = "imagenes")
 @Getter
 @Setter
-public class Imagenesobra {
+public class Imagenes {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,6 +22,10 @@ public class Imagenesobra {
     @ManyToOne
     @JoinColumn(name="idobra")
     private Obra obra;
+
+    @ManyToOne
+    @JoinColumn(name="idteatro")
+    private Teatro teatro;
 
 
 }

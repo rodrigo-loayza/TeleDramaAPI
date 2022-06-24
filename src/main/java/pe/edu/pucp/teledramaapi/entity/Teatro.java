@@ -68,4 +68,8 @@ public class Teatro {
     @JsonBackReference
     private List<Empleado> empleados;
 
+    @OneToMany(mappedBy = "teatro", cascade = {CascadeType.ALL})
+    @JsonBackReference
+    private List<Imagenes> imagenes;
+
 }

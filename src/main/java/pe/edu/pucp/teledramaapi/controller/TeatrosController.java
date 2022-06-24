@@ -25,8 +25,9 @@ public class TeatrosController {
     public ResponseEntity<HashMap<String, Object>> teatrosPorFecha(@RequestParam("idobra") String idObra,@RequestParam("fecha") String fecha ) {
         HashMap<String, Object> response = new HashMap<>();
         try {
-            SimpleDateFormat dateFormat=new SimpleDateFormat("yyyy-MM-dd");
-            Optional<List<Teatro>> teatros = teatroRepository.teatrosPorFecha( dateFormat.parse(fecha), Integer.parseInt(idObra));
+//            SimpleDateFormat dateFormat=new SimpleDateFormat("yyyy-MM-dd");
+//            Optional<List<Teatro>> teatros = teatroRepository.teatrosPorFecha( dateFormat.parse(fecha), Integer.parseInt(idObra));
+            Optional<List<Teatro>> teatros = teatroRepository.teatrosPorFecha(fecha, Integer.parseInt(idObra));
             return teatros.map(teatritos -> {
                 response.put("result", "success");
                 response.put("teatros", teatritos);
@@ -35,7 +36,7 @@ public class TeatrosController {
                 response.put("msg", "Fecha no encontrada");
                 return new ResponseEntity<>(response, HttpStatus.NOT_FOUND); //
             });
-        } catch (NumberFormatException | ParseException p) {
+        } catch (NumberFormatException e) {
             response.put("msg", "Error de parámetros");
             return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
         }

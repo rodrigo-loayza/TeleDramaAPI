@@ -56,7 +56,7 @@ public class Obra {
     private List<Elenco> elencoPorObra;
 
     @OneToMany(mappedBy = "obra")
-    private List<Imagenesobra> imagenesobras;
+    private List<Imagenes> imagenes;
 
 
 

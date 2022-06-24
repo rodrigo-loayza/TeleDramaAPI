@@ -2,7 +2,7 @@ package pe.edu.pucp.teledramaapi.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import pe.edu.pucp.teledramaapi.dto.contenidoSalaDto;
+import pe.edu.pucp.teledramaapi.dto.ContenidoSalaDto;
 import pe.edu.pucp.teledramaapi.entity.Sala;
 
 import java.util.List;
@@ -23,11 +23,8 @@ public interface SalaRepository extends JpaRepository<Sala, Integer> {
             "inner join elenco el on el.id=obel.idelenco\n" +
             "inner join compra co on co.idfuncion=fu.id\n" +
             "where el.rol='director' and fu.idsala= ?1",nativeQuery = true)
-    List<contenidoSalaDto> listaInfoSala(Integer idSala);
+    List<ContenidoSalaDto> listaInfoSala(Integer idSala);
 
     Optional<Sala> findAllByTeatro(Integer id);
-
-
-
 
 }
