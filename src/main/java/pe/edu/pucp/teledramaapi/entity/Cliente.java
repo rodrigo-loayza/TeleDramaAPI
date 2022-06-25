@@ -62,8 +62,5 @@ public class Cliente implements Serializable {
     @Column(name = "image", length = 200, insertable = false)
     private String image = "https://teledrama.blob.core.windows.net/imagenes/profile_pic_default.png";
 
-    @Column(name = "rol", nullable = false, length = 45, insertable = false)
-    private String rol = "cliente";
-
     private String rsttoken;
 }
