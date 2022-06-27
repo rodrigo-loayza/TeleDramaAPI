@@ -16,11 +16,7 @@ import pe.edu.pucp.teledramaapi.repository.ClienteRepository;
 import pe.edu.pucp.teledramaapi.repository.ElencoRepository;
 import pe.edu.pucp.teledramaapi.repository.ObraRepository;
 
-import javax.persistence.criteria.CriteriaBuilder;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 
 @CrossOrigin
 @RestController
@@ -29,18 +25,20 @@ public class CalificacionController {
 
     @Autowired
     CalificacionRepository calificacionRepository;
+
     @Autowired
     ObraRepository obraRepository;
+
     @Autowired
     ElencoRepository elencoRepository;
+
     @Autowired
     ClienteRepository clienteRepository;
 
-    @CrossOrigin("http://localhost:8080")
     @PostMapping(value = "/guardar", consumes = {MediaType.APPLICATION_FORM_URLENCODED_VALUE + "; charset=utf-8"})
-    public ResponseEntity guardarCalificacion(@RequestParam(value = "listaE") String listaE,
-                                              @RequestParam(value = "listaO") String listaO,
-                                              @RequestParam(value = "cliente") String idClienteStr
+    public ResponseEntity guardarCalificacion(@RequestParam(value = "cliente") String idClienteStr,
+                                              @RequestParam(value = "listaE") String listaE,
+                                              @RequestParam(value = "listaO") String listaO
     ) {
         try {
             idClienteStr = idClienteStr.replaceAll("\"", "");
@@ -50,9 +48,9 @@ public class CalificacionController {
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
 
-            Cliente cliente = clienteRepository.findById(idCliente).get();
-            Map<String, String> listaElenco = new ObjectMapper().readValue(listaE, HashMap.class);
-            Map<String, String> listaObra = new ObjectMapper().readValue(listaO, HashMap.class);
+            Cliente cliente = clienteRepository.findById(idCliente).orElse(null);
+            HashMap<String, String> listaElenco = new ObjectMapper().readValue(listaE, HashMap.class);
+            HashMap<String, String> listaObra = new ObjectMapper().readValue(listaO, HashMap.class);
 
             Integer idObra = null;
             Integer estrellasObra = null;
@@ -62,34 +60,22 @@ public class CalificacionController {
                 break;
             }
 
-
             if (idObra == null || !obraRepository.existsById(idObra)) {
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
 
-            Obra obra = obraRepository.findById(idObra).get();
+            Obra obra = obraRepository.findById(idObra).orElse(null);
 
-            Calificacion calificacionObra = new Calificacion();
-            calificacionObra.setIdobra(obra);
-            calificacionObra.setEstrellas(estrellasObra);
-            calificacionObra.setIdcliente(cliente);
-
-            calificacionRepository.save(calificacionObra);
+            if (estrellasObra != 0) calificacionRepository.save(new Calificacion(estrellasObra, obra, cliente));
 
             for (String elencoIdStr : listaElenco.keySet()) {
                 Integer idElenco = Integer.parseInt(elencoIdStr);
                 Integer estrellasElenco = Integer.parseInt(listaElenco.get(elencoIdStr));
 
                 if (elencoRepository.existsById(idElenco)) {
-                    Elenco elenco = elencoRepository.findById(idElenco).get();
+                    Elenco elenco = elencoRepository.findById(idElenco).orElse(null);
 
-                    Calificacion calificacionElenco = new Calificacion();
-                    calificacionElenco.setIdobra(obra);
-                    calificacionElenco.setIdelenco(elenco);
-                    calificacionElenco.setEstrellas(estrellasElenco);
-                    calificacionElenco.setIdcliente(cliente);
-
-                    calificacionRepository.save(calificacionElenco);
+                    calificacionRepository.save(new Calificacion(estrellasElenco, elenco, obra, cliente));
                 }
             }
 

@@ -31,4 +31,18 @@ public class Calificacion {
     @JoinColumn(name = "idcliente", nullable = false)
     private Cliente idcliente;
 
+    public Calificacion() {
+    }
+    public Calificacion(Integer estrellas, Obra idobra, Cliente idcliente) {
+        this.estrellas = estrellas;
+        this.idobra = idobra;
+        this.idcliente = idcliente;
+    }
+
+    public Calificacion(Integer estrellas, Elenco idelenco, Obra idobra, Cliente idcliente) {
+        this.estrellas = estrellas;
+        this.idelenco = idelenco;
+        this.idobra = idobra;
+        this.idcliente = idcliente;
+    }
 }
