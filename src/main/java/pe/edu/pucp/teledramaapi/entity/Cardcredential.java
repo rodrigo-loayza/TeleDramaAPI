@@ -27,4 +27,10 @@ public class Cardcredential {
     @Column(name = "typecard", length = 15)
     private String typecard;
 
+    @Column(name = "nombre", length = 10)
+    private String nombre;
+
+    @Column(name = "apellido", length = 10)
+    private String apellido;
+
 }
