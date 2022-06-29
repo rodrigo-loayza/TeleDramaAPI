@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import pe.edu.pucp.teledramaapi.dto.MontoObraReporteDto;
+import pe.edu.pucp.teledramaapi.dto.TeatrosFrecuentesDto;
 import pe.edu.pucp.teledramaapi.entity.Teatro;
 
 import java.util.Date;
@@ -69,4 +70,14 @@ public interface TeatroRepository extends JpaRepository<Teatro, Integer> {
             "as reporte group by idobra order by nombre;")
     List<MontoObraReporteDto> montoRecaudadoPorObra(@Param("fechainicio") Date fechainicio, @Param("fechafin") Date fechafin,
                                                     @Param("idteatro") Integer idteatro);
+
+    @Query(value = "select te.nombre as teatroFrecuente from cliente cli\n" +
+            "inner join compra co on co.idcliente=cli.id\n" +
+            "inner join funcion fu on fu.id=co.idfuncion\n" +
+            "inner join sala sa on sa.id=fu.idsala\n" +
+            "inner join teatro te on te.id=sa.idteatro\n" +
+            "where cli.id like ?1% \n" +
+            "group by te.nombre\n" +
+            "order by cantidadtickets desc\n", nativeQuery = true)
+    List<TeatrosFrecuentesDto> teatrosFrecuentesList(Integer id);
 }

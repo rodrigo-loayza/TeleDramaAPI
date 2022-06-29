@@ -4,11 +4,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import pe.edu.pucp.teledramaapi.dto.TeatrosFrecuentesDto;
 import pe.edu.pucp.teledramaapi.entity.Teatro;
 import pe.edu.pucp.teledramaapi.repository.TeatroRepository;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
@@ -40,5 +39,10 @@ public class TeatrosController {
             response.put("msg", "Error de parámetros");
             return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
         }
+    }
+
+    @GetMapping(value = "/teatrosFrecuentes")
+    public List<TeatrosFrecuentesDto> teatrosFrecuentes(@RequestParam("id") int id){
+        return  teatroRepository.teatrosFrecuentesList(id);
     }
 }
