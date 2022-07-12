@@ -39,8 +39,11 @@ public class Obra {
     @NotNull(message = "Indicar la duración de la obra")
     private Integer duracion;
 
-    @Column(name = "fotoprincipal", nullable = false, length = 500)
-    private String fotoprincipal;
+    @Column(name = "imagen", nullable = false, length = 255)
+    private String imagen;
+
+    @Column(name = "miniatura", nullable = false, length = 255)
+    private String miniatura;
 
     @ManyToMany
     @JoinTable(name = "genero_obra",
@@ -57,7 +60,5 @@ public class Obra {
 
     @OneToMany(mappedBy = "obra")
     private List<Imagenes> imagenes;
-
-
 
 }

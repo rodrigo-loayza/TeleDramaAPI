@@ -53,7 +53,7 @@ public interface FuncionRepository extends JpaRepository<Funcion, Integer> {
     List<FuncionesPorObraDto> obradeFuncion(Integer idf);
 
 
-    @Query(value = "select o.id as idobra, o.nombre, o.fotoprincipal,\n" +
+    @Query(value = "select o.id as idobra, o.nombre, o.miniatura,\n" +
             "f.fechahora,\n" +
             "s.id as idsala, s.nombre as sala,\n" +
             "t.id as idteatro, t.nombre as teatro,\n" +
@@ -67,7 +67,7 @@ public interface FuncionRepository extends JpaRepository<Funcion, Integer> {
             "group by f.id order by asistencia,fechahora desc limit 1", nativeQuery = true)
     Optional<FuncionMasMenosVistaDto> funcionMenosVista();
 
-    @Query(value = "select o.id as idobra, o.nombre, o.fotoprincipal,\n" +
+    @Query(value = "select o.id as idobra, o.nombre, o.miniatura,\n" +
             "f.fechahora,\n" +
             "s.id as idsala, s.nombre as sala,\n" +
             "t.id as idteatro, t.nombre as teatro,\n" +
@@ -151,7 +151,6 @@ public interface FuncionRepository extends JpaRepository<Funcion, Integer> {
                                                                    @Param("idteatro") Integer idteatro);
 
 
-
     @Query(value ="select f.id as idfuncion,time_format(f.fechahora,'%H:%i') as time,o.id as idobra from funcion f\n" +
             "inner join obra o on (o.id=f.idobra)\n" +
             "inner join sala s on (s.id=f.idsala)\n" +
@@ -159,8 +158,10 @@ public interface FuncionRepository extends JpaRepository<Funcion, Integer> {
             "where date(f.fechahora)= ?1 and o.id=?2 and t.id=?3 and f.estado='activo';", nativeQuery = true)
     Optional<List<HorasFuncionDto>> horasFuncionesPorTeatro(String fecha, Integer idobra, Integer idteatro);
 
-
-    @Query(value="select f.id as idfuncion,o.duracion as duracion,f.costoticket, o.id as idobra,o.nombre as nombreobra, o.fotoprincipal as imagen, date(f.fechahora) as fechafuncion, time_format(f.fechahora,'%H:%i') as horafuncion, t.id as idteatro, t.nombre as nombreteatro, f.aforofuncion as aforo\n" +
+    @Query(value="select f.id as idfuncion,o.duracion as duracion,f.costoticket, o.id as idobra,\n" +
+            "o.nombre as nombreobra, o.imagen as imagen, date(f.fechahora) as fechafuncion,\n" +
+            "time_format(f.fechahora,'%H:%i') as horafuncion, t.id as idteatro,\n" +
+            "t.nombre as nombreteatro, f.aforofuncion as aforo\n" +
             "from funcion f \n" +
             "inner join obra o on f.idobra = o.id\n" +
             "inner join sala s on s.id=f.idsala\n" +

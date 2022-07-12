@@ -4,7 +4,7 @@ public interface ObraMejorCalificadaDto {
 
     Integer getId();
     String getNombre();
-    String getFotoprincipal();
+    String getMiniatura();
     Double getCalificacion();
     Integer getVotos();
 

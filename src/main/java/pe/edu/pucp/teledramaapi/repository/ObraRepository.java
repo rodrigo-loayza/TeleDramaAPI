@@ -137,7 +137,7 @@ public interface ObraRepository extends JpaRepository<Obra, Integer> {
             "            where t.id=?1 and te.idempleado = ?2 order by o.nombre ASC")
     List<Obra> obraPorTeatroGestion(Integer idTeatro, Integer idOperador, Pageable pageable);
 
-    @Query(nativeQuery = true, value = "select o.id, o.nombre,o.fotoprincipal,\n" +
+    @Query(nativeQuery = true, value = "select o.id, o.nombre,o.miniatura,\n" +
             "round(sum(ca.estrellas)/count(ca.estrellas),2) as calificacion, count(idobra) as votos \n" +
             "from obra o inner join calificacion ca on ca.idobra=o.id\n" +
             "where idelenco is null\n" +

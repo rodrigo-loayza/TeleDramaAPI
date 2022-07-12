@@ -55,7 +55,7 @@ public class CalificacionController {
             Integer idObra = null;
             Integer estrellasObra = null;
             for (String idObraStr : listaObra.keySet()) {
-                idObra = Integer.parseInt(idObraStr);
+                idObra = Integer.parseInt(idObraStr.equals("") ? "0" : idObraStr);
                 estrellasObra = Integer.parseInt(listaObra.get(idObraStr));
                 break;
             }

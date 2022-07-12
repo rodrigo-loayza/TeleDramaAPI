@@ -6,7 +6,7 @@ public interface FuncionMasMenosVistaDto {
 
     Integer getIdobra();
     String getNombre();
-    String getFotoprincipal();
+    String getMiniatura();
     LocalDateTime getFechahora();
     Integer getIdsala();
     String getSala();
