@@ -21,16 +21,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.cors().configurationSource(request -> new CorsConfiguration().applyPermitDefaultValues())
-                .and()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
-                .csrf().disable();
+        http.cors();
+        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+        http.csrf().disable();
         http.authorizeRequests()
-                .antMatchers("/api/sala/**").hasAnyAuthority("operador")
-                .antMatchers("/api/teatro/**").hasAnyAuthority("operador")
-                .antMatchers("/api/funcion/**").hasAnyAuthority("operador")
-                .antMatchers("/api/dashboard/**").hasAnyAuthority("operador")
+                .antMatchers("/sala/**").authenticated()
+                .antMatchers("/teatro/**").authenticated()
+                .antMatchers("/funcion/**").authenticated()
+                .antMatchers("/dashboard/**").authenticated()
                 .anyRequest().permitAll();
         http.httpBasic();
     }
