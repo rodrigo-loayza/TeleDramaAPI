@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import pe.edu.pucp.teledramaapi.dto.MontoObraReporteDto;
+import pe.edu.pucp.teledramaapi.dto.TeatroaCargoDto;
 import pe.edu.pucp.teledramaapi.dto.TeatrosFrecuentesDto;
 import pe.edu.pucp.teledramaapi.entity.Teatro;
 
@@ -80,4 +81,10 @@ public interface TeatroRepository extends JpaRepository<Teatro, Integer> {
             "group by te.nombre\n" +
             "order by cantidadtickets desc\n", nativeQuery = true)
     List<TeatrosFrecuentesDto> teatrosFrecuentesList(Integer id);
+
+    @Query(value = "select te.nombre as teatroaCargo from empleado em\n" +
+            "inner join teatro_empleado teem on teem.idempleado=em.id\n" +
+            "inner join teatro te on te.id=teem.idteatro\n" +
+            "where em.rol = 'operador' and em.id like ?1%", nativeQuery = true)
+    List<TeatroaCargoDto> teatroaCargoList(Integer id);
 }

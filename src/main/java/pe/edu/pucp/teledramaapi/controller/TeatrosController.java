@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import pe.edu.pucp.teledramaapi.dto.TeatroaCargoDto;
 import pe.edu.pucp.teledramaapi.dto.TeatrosFrecuentesDto;
 import pe.edu.pucp.teledramaapi.entity.Teatro;
 import pe.edu.pucp.teledramaapi.repository.TeatroRepository;
@@ -45,4 +46,10 @@ public class TeatrosController {
     public List<TeatrosFrecuentesDto> teatrosFrecuentes(@RequestParam("id") int id){
         return  teatroRepository.teatrosFrecuentesList(id);
     }
+
+    @GetMapping(value = "/teatroaCargo")
+    public List<TeatroaCargoDto> teatroaCargo(@RequestParam("id") int id){
+        return teatroRepository.teatroaCargoList(id);
+    }
+
 }
