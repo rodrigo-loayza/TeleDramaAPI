@@ -80,11 +80,11 @@ public interface TeatroRepository extends JpaRepository<Teatro, Integer> {
             "where cli.id like ?1% \n" +
             "group by te.nombre\n" +
             "order by cantidadtickets desc\n", nativeQuery = true)
-    List<TeatrosFrecuentesDto> teatrosFrecuentesList(Integer id);
+    Optional<List<TeatrosFrecuentesDto>> teatrosFrecuentesList(Integer id);
 
     @Query(value = "select te.nombre as teatroaCargo from empleado em\n" +
             "inner join teatro_empleado teem on teem.idempleado=em.id\n" +
             "inner join teatro te on te.id=teem.idteatro\n" +
             "where em.rol = 'operador' and em.id like ?1%", nativeQuery = true)
-    List<TeatroaCargoDto> teatroaCargoList(Integer id);
+    Optional<List<TeatroaCargoDto>> teatroaCargoList(Integer id);
 }

@@ -8,7 +8,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.web.cors.CorsConfiguration;
 
 import javax.sql.DataSource;
 
@@ -25,10 +24,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         http.csrf().disable();
         http.authorizeRequests()
-                .antMatchers("/sala/**").authenticated()
-                .antMatchers("/teatro/**").authenticated()
-                .antMatchers("/funcion/**").authenticated()
-                .antMatchers("/dashboard/**").authenticated()
+                .antMatchers("/sala/**").hasAuthority("administrador")
+                .antMatchers("/teatro/**").hasAuthority("administrador")
+                .antMatchers("/funcion/**").hasAuthority("administrador")
+                .antMatchers("/dashboard/**").hasAuthority("administrador")
+                .antMatchers("/card/**").hasAuthority("administrador")
+                .antMatchers("/calificacion/**").hasAuthority("administrador")
                 .anyRequest().permitAll();
         http.httpBasic();
     }

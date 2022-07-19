@@ -2,7 +2,6 @@ package pe.edu.pucp.teledramaapi.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -38,15 +37,8 @@ public class CalificacionController {
 
     @PostMapping(value = "/guardar", consumes = {MediaType.APPLICATION_FORM_URLENCODED_VALUE + "; charset=utf-8"})
     public ResponseEntity guardarCalificacion(
-            @ApiParam(value = "ID de Cliente", required = true, example = "27")
             @RequestParam(value = "cliente") String idClienteStr,
-            @ApiParam(value = "Cadena en formato JSON de ID de Elenco con su calificación",
-                    required = true,
-                    example = "{\"195\":\"5\", \"196\":\"4\"}")
             @RequestParam(value = "listaE") String listaE,
-            @ApiParam(value = "Cadena en formato JSON del ID la Obra y su calificación",
-                    required = true,
-                    example = "{\"21\":\"3\"}")
             @RequestParam(value = "listaO") String listaO
     ) {
         try {
@@ -70,7 +62,7 @@ public class CalificacionController {
             }
 
             if (idObra == null || !obraRepository.existsById(idObra)) {
-                return new ResponseEntity<>(HttpStatus.CREATED);
+                return new ResponseEntity<>(HttpStatus.OK);
             }
 
             Obra obra = obraRepository.findById(idObra).orElse(null);
