@@ -2,6 +2,7 @@ package pe.edu.pucp.teledramaapi.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -36,9 +37,17 @@ public class CalificacionController {
     ClienteRepository clienteRepository;
 
     @PostMapping(value = "/guardar", consumes = {MediaType.APPLICATION_FORM_URLENCODED_VALUE + "; charset=utf-8"})
-    public ResponseEntity guardarCalificacion(@RequestParam(value = "cliente") String idClienteStr,
-                                              @RequestParam(value = "listaE") String listaE,
-                                              @RequestParam(value = "listaO") String listaO
+    public ResponseEntity guardarCalificacion(
+            @ApiParam(value = "ID de Cliente", required = true, example = "27")
+            @RequestParam(value = "cliente") String idClienteStr,
+            @ApiParam(value = "Cadena en formato JSON de ID de Elenco con su calificación",
+                    required = true,
+                    example = "{\"195\":\"5\", \"196\":\"4\"}")
+            @RequestParam(value = "listaE") String listaE,
+            @ApiParam(value = "Cadena en formato JSON del ID la Obra y su calificación",
+                    required = true,
+                    example = "{\"21\":\"3\"}")
+            @RequestParam(value = "listaO") String listaO
     ) {
         try {
             idClienteStr = idClienteStr.replaceAll("\"", "");
@@ -61,7 +70,7 @@ public class CalificacionController {
             }
 
             if (idObra == null || !obraRepository.existsById(idObra)) {
-                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<>(HttpStatus.CREATED);
             }
 
             Obra obra = obraRepository.findById(idObra).orElse(null);
@@ -79,12 +88,12 @@ public class CalificacionController {
                 }
             }
 
-            return new ResponseEntity<>(HttpStatus.OK);
+            return new ResponseEntity<>(null, HttpStatus.OK);
 
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
     }
 
 }
