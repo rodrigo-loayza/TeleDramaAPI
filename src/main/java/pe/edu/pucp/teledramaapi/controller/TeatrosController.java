@@ -9,6 +9,9 @@ import pe.edu.pucp.teledramaapi.dto.TeatrosFrecuentesDto;
 import pe.edu.pucp.teledramaapi.entity.Teatro;
 import pe.edu.pucp.teledramaapi.repository.TeatroRepository;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
@@ -22,12 +25,19 @@ public class TeatrosController {
     TeatroRepository teatroRepository;
 
     @GetMapping(value = "/gestion")
-    public ResponseEntity<HashMap<String, Object>> teatrosPorFecha(@RequestParam("idobra") String idObra,@RequestParam("fecha") String fecha ) {
+    public ResponseEntity<HashMap<String, Object>> teatrosPorFecha(@RequestParam("idobra") String idObra,@RequestParam(value = "fecha",required = false) String fecha ) {
         HashMap<String, Object> response = new HashMap<>();
         try {
 //            SimpleDateFormat dateFormat=new SimpleDateFormat("yyyy-MM-dd");
 //            Optional<List<Teatro>> teatros = teatroRepository.teatrosPorFecha( dateFormat.parse(fecha), Integer.parseInt(idObra));
-            Optional<List<Teatro>> teatros = teatroRepository.teatrosPorFecha(fecha, Integer.parseInt(idObra));
+
+            Optional<List<Teatro>> teatros;
+            if (fecha == null || fecha.equals("")) {
+                teatros = teatroRepository.teatrosPorObraHorarios(Integer.parseInt(idObra));
+            }else {
+                teatros = teatroRepository.teatrosPorFecha(fecha, Integer.parseInt(idObra));
+            }
+
             return teatros.map(teatritos -> {
                 response.put("result", "success");
                 response.put("teatros", teatritos);

@@ -8,5 +8,7 @@ public interface FuncionesProximasDto {
     LocalDate getFecha();
     String getEstado();
     Integer getIdobra();
-
+    Integer getIdteatro();
+    String getTeatro();
+    String getHora();
 }

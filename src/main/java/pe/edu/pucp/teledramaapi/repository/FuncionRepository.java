@@ -37,6 +37,14 @@ public interface FuncionRepository extends JpaRepository<Funcion, Integer> {
     @Query(value ="SELECT id, date(fechahora) as fecha, estado,idobra FROM teledrama.funcion where fechahora > NOW() and idobra=?1 order by fechahora ASC;", nativeQuery = true)
     Optional<List<FuncionesProximasDto>> funcionesProximasId(Integer idobra);
 
+    @Query(value ="SELECT f.id, date(f.fechahora) as fecha,f.estado, f.idobra, t.id as idteatro, t.nombre as teatro, time_format(f.fechahora,'%H:%i') as hora \n" +
+            "FROM teledrama.funcion f\n" +
+            "left join obra o on (o.id=f.idobra)\n" +
+            "left join sala s on (s.id=f.idsala)\n" +
+            "left join teatro t on (t.id=s.idteatro)\n" +
+            "where fechahora > NOW() and idobra=?1 and idteatro=?2 order by fecha,hora;", nativeQuery = true)
+    Optional<List<FuncionesProximasDto>> funcionesProximasPorTeatro(Integer idobra,Integer idTeatro);
+
     @Query(value = "select f.id as idfuncion,\n" +
             "f.costoticket as costoticket,\n" +
             "f.fechahora as fechahora,\n" +

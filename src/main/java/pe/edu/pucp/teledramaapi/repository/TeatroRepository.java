@@ -55,6 +55,13 @@ public interface TeatroRepository extends JpaRepository<Teatro, Integer> {
             "where date(f.fechahora)=?1 and o.id=?2 and f.estado='activo'", nativeQuery = true)
     Optional<List<Teatro>> teatrosPorFecha(String fecha, Integer idObra);
 
+    @Query(value = "select distinct t.* from funcion f\n" +
+            "inner join obra o on (o.id=f.idobra)\n" +
+            "inner join sala s on (s.id=f.idsala)\n" +
+            "inner join teatro t on (t.id=s.idteatro)\n" +
+            "where o.id=?1 and f.estado='activo'", nativeQuery = true)
+    Optional<List<Teatro>> teatrosPorObraHorarios(Integer idObra);
+
     @Query(nativeQuery = true, value = "select idobra,nombre,idteatro,teatro,sum(monto) as montorecaudado from (select o.id as idobra, o.nombre, \n" +
             "t.id as idteatro, t.nombre as teatro,\n" +
             "round(c.precioticket*sum(c.cantidadtickets),2) as monto\n" +

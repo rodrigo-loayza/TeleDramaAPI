@@ -25,11 +25,19 @@ public class FuncionController {
     FuncionRepository funcionRepository;
 
     @GetMapping(value = "/gestion")
-    public ResponseEntity<HashMap<String, Object>> funcionPorObra(@RequestParam("idobra") String idObra) {
+    public ResponseEntity<HashMap<String, Object>> funcionPorObra(@RequestParam("idobra") String idObra,
+                                                                  @RequestParam(value = "idteatro",required = false) String idteatro) {
         HashMap<String, Object> response = new HashMap<>();
         try {
-            Optional<List<FuncionesProximasDto>> funciones = funcionRepository.funcionesProximasId(Integer.parseInt(idObra));
-            return funciones.map(funcioncitas-> {
+            Optional<List<FuncionesProximasDto>> funciones;
+
+            if (idteatro == null || idteatro.equals("")) {
+                funciones = funcionRepository.funcionesProximasId(Integer.parseInt(idObra));
+            }else {
+                funciones = funcionRepository.funcionesProximasPorTeatro(Integer.parseInt(idObra),Integer.parseInt(idteatro));
+            }
+
+            return funciones.map(funcioncitas -> {
                 response.put("result", "success");
                 response.put("funciones", funcioncitas);
                 return new ResponseEntity<>(response, HttpStatus.OK);
@@ -50,7 +58,7 @@ public class FuncionController {
 //            SimpleDateFormat dateFormat=new SimpleDateFormat("yyyy-MM-dd");
 //            Optional<List<HorasFuncionDto>> hora = funcionRepository.horasFuncionesPorTeatro(dateFormat.parse(fecha), Integer.parseInt(idObra), Integer.parseInt(idteatro));
             Optional<List<HorasFuncionDto>> hora = funcionRepository.horasFuncionesPorTeatro(fecha, Integer.parseInt(idObra), Integer.parseInt(idteatro));
-            return hora.map(horitas-> {
+            return hora.map(horitas -> {
                 response.put("result", "success");
                 response.put("horitas", horitas);
                 return new ResponseEntity<>(response, HttpStatus.OK);
@@ -69,11 +77,11 @@ public class FuncionController {
         HashMap<String, Object> response = new HashMap<>();
         try {
             Optional<FuncionDatosDto> funcion = funcionRepository.detalleFuncion(Integer.parseInt(idfuncion));
-            if(funcion.isPresent()) {
+            if (funcion.isPresent()) {
                 response.put("result", "success");
                 response.put("funcioncita", funcion.get());
                 return new ResponseEntity<>(response, HttpStatus.OK);
-            }else {
+            } else {
                 response.put("msg", "Funcion no encontrada");
                 return new ResponseEntity<>(response, HttpStatus.NOT_FOUND); //
             }
