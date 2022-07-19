@@ -2,23 +2,11 @@ package pe.edu.pucp.teledramaapi.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
-import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
-import pe.edu.pucp.teledramaapi.entity.Funcion;
 import pe.edu.pucp.teledramaapi.entity.Sala;
-import pe.edu.pucp.teledramaapi.repository.FuncionRepository;
 import pe.edu.pucp.teledramaapi.repository.SalaRepository;
 
-import javax.validation.Valid;
-import java.beans.PropertyEditorSupport;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
@@ -30,9 +18,6 @@ public class SalaController {
 
     @Autowired
     private SalaRepository salaRepository;
-
-    @Autowired
-    private FuncionRepository funcionRepository;
 
     @GetMapping(value = "/gestion/teatro/{idteatro}")
     public ResponseEntity<HashMap<String, Object>> salasActivasPorTeatro(@PathVariable("idteatro") String idStr) {

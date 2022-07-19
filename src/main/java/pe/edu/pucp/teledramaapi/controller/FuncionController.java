@@ -7,11 +7,8 @@ import org.springframework.web.bind.annotation.*;
 import pe.edu.pucp.teledramaapi.dto.FuncionDatosDto;
 import pe.edu.pucp.teledramaapi.dto.FuncionesProximasDto;
 import pe.edu.pucp.teledramaapi.dto.HorasFuncionDto;
-import pe.edu.pucp.teledramaapi.entity.Funcion;
 import pe.edu.pucp.teledramaapi.repository.FuncionRepository;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
