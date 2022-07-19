@@ -3,9 +3,7 @@ package pe.edu.pucp.teledramaapi.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import pe.edu.pucp.teledramaapi.dto.FuncionesProximasDto;
 import pe.edu.pucp.teledramaapi.entity.Cardcredential;
 import pe.edu.pucp.teledramaapi.repository.CardRepository;
 
@@ -28,14 +26,16 @@ public class CardController {
             Optional<List<Cardcredential>> lista = Optional.of(cardRepository.findAll());
             return lista.map(cards-> {
                 response.put("result", "success");
-                response.put("cards", cards);
+                response.put("data", cards);
                 return new ResponseEntity<>(response, HttpStatus.OK);
             }).orElseGet(() -> {
-                response.put("msg", "No encontrado");
+                response.put("result", "failure");
+                response.put("data", "No encontrado");
                 return new ResponseEntity<>(response, HttpStatus.NOT_FOUND); //
             });
         } catch (NumberFormatException e) {
-            response.put("msg", "Error de parámetros");
+            response.put("result", "failure");
+            response.put("data", "Error de parámetros");
             return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
         }
     }

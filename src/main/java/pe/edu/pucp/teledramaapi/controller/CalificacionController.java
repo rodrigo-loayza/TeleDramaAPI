@@ -36,9 +36,10 @@ public class CalificacionController {
     ClienteRepository clienteRepository;
 
     @PostMapping(value = "/guardar", consumes = {MediaType.APPLICATION_FORM_URLENCODED_VALUE + "; charset=utf-8"})
-    public ResponseEntity guardarCalificacion(@RequestParam(value = "cliente") String idClienteStr,
-                                              @RequestParam(value = "listaE") String listaE,
-                                              @RequestParam(value = "listaO") String listaO
+    public ResponseEntity guardarCalificacion(
+            @RequestParam(value = "cliente") String idClienteStr,
+            @RequestParam(value = "listaE") String listaE,
+            @RequestParam(value = "listaO") String listaO
     ) {
         try {
             idClienteStr = idClienteStr.replaceAll("\"", "");
@@ -61,7 +62,7 @@ public class CalificacionController {
             }
 
             if (idObra == null || !obraRepository.existsById(idObra)) {
-                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<>(HttpStatus.OK);
             }
 
             Obra obra = obraRepository.findById(idObra).orElse(null);
@@ -79,12 +80,12 @@ public class CalificacionController {
                 }
             }
 
-            return new ResponseEntity<>(HttpStatus.OK);
+            return new ResponseEntity<>(null, HttpStatus.OK);
 
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
     }
 
 }

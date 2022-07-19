@@ -9,9 +9,6 @@ import pe.edu.pucp.teledramaapi.dto.TeatrosFrecuentesDto;
 import pe.edu.pucp.teledramaapi.entity.Teatro;
 import pe.edu.pucp.teledramaapi.repository.TeatroRepository;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
@@ -28,8 +25,6 @@ public class TeatrosController {
     public ResponseEntity<HashMap<String, Object>> teatrosPorFecha(@RequestParam("idobra") String idObra,@RequestParam(value = "fecha",required = false) String fecha ) {
         HashMap<String, Object> response = new HashMap<>();
         try {
-//            SimpleDateFormat dateFormat=new SimpleDateFormat("yyyy-MM-dd");
-//            Optional<List<Teatro>> teatros = teatroRepository.teatrosPorFecha( dateFormat.parse(fecha), Integer.parseInt(idObra));
 
             Optional<List<Teatro>> teatros;
             if (fecha == null || fecha.equals("")) {
@@ -40,26 +35,60 @@ public class TeatrosController {
 
             return teatros.map(teatritos -> {
                 response.put("result", "success");
-                response.put("teatros", teatritos);
+                response.put("data", teatritos);
                 return new ResponseEntity<>(response, HttpStatus.OK);
             }).orElseGet(() -> {
-                response.put("msg", "Fecha no encontrada");
+                response.put("result", "failure");
+                response.put("data", "Fecha no encontrada");
                 return new ResponseEntity<>(response, HttpStatus.NOT_FOUND); //
             });
         } catch (NumberFormatException e) {
-            response.put("msg", "Error de parámetros");
+            response.put("result", "failure");
+            response.put("data", "Error de parámetros");
             return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
         }
     }
 
     @GetMapping(value = "/teatrosFrecuentes")
-    public List<TeatrosFrecuentesDto> teatrosFrecuentes(@RequestParam("id") int id){
-        return  teatroRepository.teatrosFrecuentesList(id);
+    public ResponseEntity<HashMap<String, Object>> teatrosFrecuentes(@RequestParam("id") int id) {
+        HashMap<String, Object> response = new HashMap<>();
+        try {
+            Optional<List<TeatrosFrecuentesDto>> teatros = teatroRepository.teatrosFrecuentesList(id);
+            return teatros.map(teatritosFrec -> {
+                response.put("result", "success");
+                response.put("data", teatritosFrec);
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            }).orElseGet(() -> {
+                response.put("result", "failure");
+                response.put("data", "Teatros frecuentes no encontrados");
+                return new ResponseEntity<>(response, HttpStatus.NOT_FOUND); //
+            });
+        } catch (NumberFormatException e) {
+            response.put("result", "failure");
+            response.put("data", "Error de parámetros");
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        }
     }
 
-    @GetMapping(value = "/teatroaCargo")
-    public List<TeatroaCargoDto> teatroaCargo(@RequestParam("id") int id){
-        return teatroRepository.teatroaCargoList(id);
+    @GetMapping(value = "/teatrosACargo")
+    public ResponseEntity<HashMap<String, Object>> teatrosACargo(@RequestParam("id") int id) {
+        HashMap<String, Object> response = new HashMap<>();
+        try {
+            Optional<List<TeatroaCargoDto>> teatros = teatroRepository.teatroaCargoList(id);
+            return teatros.map(teatritosCar -> {
+                response.put("result", "success");
+                response.put("data", teatritosCar);
+                return new ResponseEntity<>(response, HttpStatus.OK);
+            }).orElseGet(() -> {
+                response.put("result", "failure");
+                response.put("data", "Teatros a cargo no encontrados");
+                return new ResponseEntity<>(response, HttpStatus.NOT_FOUND); //
+            });
+        } catch (NumberFormatException e) {
+            response.put("result", "failure");
+            response.put("data", "Error de parámetros");
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        }
     }
 
 }

@@ -7,11 +7,8 @@ import org.springframework.web.bind.annotation.*;
 import pe.edu.pucp.teledramaapi.dto.FuncionDatosDto;
 import pe.edu.pucp.teledramaapi.dto.FuncionesProximasDto;
 import pe.edu.pucp.teledramaapi.dto.HorasFuncionDto;
-import pe.edu.pucp.teledramaapi.entity.Funcion;
 import pe.edu.pucp.teledramaapi.repository.FuncionRepository;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
@@ -39,14 +36,16 @@ public class FuncionController {
 
             return funciones.map(funcioncitas -> {
                 response.put("result", "success");
-                response.put("funciones", funcioncitas);
+                response.put("data", funcioncitas);
                 return new ResponseEntity<>(response, HttpStatus.OK);
             }).orElseGet(() -> {
-                response.put("msg", "Funcion no encontrada");
+                response.put("result", "failure");
+                response.put("data", "Funcion no encontrada");
                 return new ResponseEntity<>(response, HttpStatus.NOT_FOUND); //
             });
         } catch (NumberFormatException e) {
-            response.put("msg", "Error de parámetros");
+            response.put("result", "failure");
+            response.put("data", "Error de parámetros");
             return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
         }
     }
@@ -55,19 +54,19 @@ public class FuncionController {
     public ResponseEntity<HashMap<String, Object>> horasFuncionPorObra(@RequestParam("idobra") String idObra, @RequestParam("fecha") String fecha, @RequestParam("idteatro") String idteatro) {
         HashMap<String, Object> response = new HashMap<>();
         try {
-//            SimpleDateFormat dateFormat=new SimpleDateFormat("yyyy-MM-dd");
-//            Optional<List<HorasFuncionDto>> hora = funcionRepository.horasFuncionesPorTeatro(dateFormat.parse(fecha), Integer.parseInt(idObra), Integer.parseInt(idteatro));
             Optional<List<HorasFuncionDto>> hora = funcionRepository.horasFuncionesPorTeatro(fecha, Integer.parseInt(idObra), Integer.parseInt(idteatro));
-            return hora.map(horitas -> {
+            return hora.map(horitas-> {
                 response.put("result", "success");
-                response.put("horitas", horitas);
+                response.put("data", horitas);
                 return new ResponseEntity<>(response, HttpStatus.OK);
             }).orElseGet(() -> {
-                response.put("msg", "Funcion no encontrada");
+                response.put("result", "failure");
+                response.put("data", "Funcion no encontrada");
                 return new ResponseEntity<>(response, HttpStatus.NOT_FOUND); //
             });
         } catch (NumberFormatException e) {
-            response.put("msg", "Error de parámetros");
+            response.put("result", "failure");
+            response.put("data", "Error de parámetros");
             return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
         }
     }
@@ -79,14 +78,16 @@ public class FuncionController {
             Optional<FuncionDatosDto> funcion = funcionRepository.detalleFuncion(Integer.parseInt(idfuncion));
             if (funcion.isPresent()) {
                 response.put("result", "success");
-                response.put("funcioncita", funcion.get());
+                response.put("data", funcion.get());
                 return new ResponseEntity<>(response, HttpStatus.OK);
-            } else {
-                response.put("msg", "Funcion no encontrada");
+            }else {
+                response.put("result", "failure");
+                response.put("data", "Funcion no encontrada");
                 return new ResponseEntity<>(response, HttpStatus.NOT_FOUND); //
             }
         } catch (NumberFormatException e) {
-            response.put("msg", "Error de parámetros");
+            response.put("result", "failure");
+            response.put("data", "Error de parámetros");
             return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
         }
     }
