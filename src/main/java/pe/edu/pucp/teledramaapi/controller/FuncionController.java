@@ -23,11 +23,10 @@ public class FuncionController {
 
     @GetMapping(value = "/gestion")
     public ResponseEntity<HashMap<String, Object>> funcionPorObra(@RequestParam("idobra") String idObra,
-                                                                  @RequestParam(value = "idteatro",required = false) String idteatro) {
+                                                                  @RequestParam(value = "idteatro", required = false) String idteatro) {
         HashMap<String, Object> response = new HashMap<>();
         try {
             Optional<List<FuncionesProximasDto>> funciones;
-
             if (idteatro == null || idteatro.equals("")) {
                 funciones = funcionRepository.funcionesProximasId(Integer.parseInt(idObra));
             }else {
@@ -40,7 +39,7 @@ public class FuncionController {
                 return new ResponseEntity<>(response, HttpStatus.OK);
             }).orElseGet(() -> {
                 response.put("result", "failure");
-                response.put("data", "Funcion no encontrada");
+                response.put("data", "Funciones no encontradas");
                 return new ResponseEntity<>(response, HttpStatus.NOT_FOUND); //
             });
         } catch (NumberFormatException e) {
@@ -61,7 +60,7 @@ public class FuncionController {
                 return new ResponseEntity<>(response, HttpStatus.OK);
             }).orElseGet(() -> {
                 response.put("result", "failure");
-                response.put("data", "Funcion no encontrada");
+                response.put("data", "Horarios de función no encontrados");
                 return new ResponseEntity<>(response, HttpStatus.NOT_FOUND); //
             });
         } catch (NumberFormatException e) {

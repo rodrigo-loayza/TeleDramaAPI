@@ -26,16 +26,16 @@ public class SalaController {
             Optional<List<Sala>> optSalas = salaRepository.salasPorIdteatroYEstado(Integer.parseInt(idStr), "activo");
             return optSalas.map(salas -> {
                 response.put("result", "success");
-                response.put("salas", salas);
+                response.put("data", salas);
                 return new ResponseEntity<>(response, HttpStatus.OK);
             }).orElseGet(() -> {
                 response.put("result", "failure");
-                response.put("msg", "Teatro no encontrado");
-                return new ResponseEntity<>(response, HttpStatus.NOT_FOUND); // o no tiene salas xd
+                response.put("data", "Teatro no encontrado");
+                return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
             });
         } catch (NumberFormatException e) {
             response.put("result", "failure");
-            response.put("msg", "Id de teatro debe ser un número entero");
+            response.put("data", "Id de teatro debe ser un número entero");
             return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
         }
     }
